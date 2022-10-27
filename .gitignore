@@ -1,0 +1,8 @@
+*.tar.gz
+*.pdf
+bin/
+output/
+testcases
+HW2_grading/
+reference.cpp
+src/*.o
