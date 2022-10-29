@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <numeric>
 #include <utility>
@@ -131,11 +132,13 @@ void FM::fm_partition() {
     bool had_improved = false;
     intg counter = 0;
     double tstart, tend;
+    std::chrono::time_point<std::chrono::high_resolution_clock> t_start, t_end;
     while (true) {
         now = best_fm_data;
         now.reset_lock();
         had_improved = false;
         tmp_cost = best_cost;
+        t_start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < num_cell - 1; ++i) {
             cost_improvement = now.update();
             if (cost_improvement == INVALID)
@@ -148,9 +151,13 @@ void FM::fm_partition() {
                 had_improved = true;
             }
         }
-        cout << "Best cost: " << best_cost << endl;
+        t_end = std::chrono::high_resolution_clock::now();
+        cout << "Best cost: " << best_cost << ", "
+             << std::chrono::duration<double, std::milli>(t_end - t_start)
+                    .count()
+             << " millisecond" << endl;
 
-        if (/* cost_improvement == INVALID &&  */ !had_improved) {
+        if (!had_improved) {
             break;
         }
     }
