@@ -136,6 +136,8 @@ void FM::fm_partition() {
     while (true) {
         now = best_fm_data;
         now.reset_lock();
+        now.reconstruct_bucket();
+
         had_improved = false;
         tmp_cost = best_cost;
         t_start = std::chrono::high_resolution_clock::now();

@@ -26,7 +26,14 @@ public:
     bool empty() { return cell_idx == -1; }
     bool operator<(const BucketElement &rhs) const {
         // NOTE: we want the descending order
-        return gain_value > rhs.gain_value;
+        if (cell_idx == rhs.cell_idx) {
+            return false;
+        } else {
+            if (gain_value == rhs.gain_value)
+                return cell_idx < rhs.cell_idx;
+            else
+                return gain_value > rhs.gain_value;
+        }
     }
 };
 

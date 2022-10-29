@@ -102,4 +102,12 @@ void FMMetaData::reset_lock() {
     done = vector<bool>(fmptr->num_cell, false);
 }
 
+void FMMetaData::reconstruct_bucket() {
+    b.st.clear();
+    for (int i = 0; i < fmptr->num_cell; ++i) {
+        calculate_gain(i);
+        b.add_element(i, gain[i]);
+    }
+}
+
 }  // namespace std

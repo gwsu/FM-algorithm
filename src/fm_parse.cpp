@@ -37,7 +37,7 @@ void FM::init(string cell_file, string net_file) {
     }
     cell_fs.close();
     cell_s_net = vector<vector<intg>>(cell_array.size());
-    cell_s_effect = vector<vector<intg>>(cell_array.size());
+    cell_s_effect = vector<set<intg>>(cell_array.size());
 
     // net
     fstream net_fs;
@@ -66,7 +66,7 @@ void FM::init(string cell_file, string net_file) {
         }
         for (int i = 0; i < cell_id.size(); ++i) {
             for (int j = 0; j < cell_id.size(); ++j) {
-                cell_s_effect[cell_id[i]].emplace_back(cell_id[j]);
+                cell_s_effect[cell_id[i]].emplace(cell_id[j]);
             }
         }
 

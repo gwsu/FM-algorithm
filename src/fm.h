@@ -20,7 +20,7 @@ public:
     vector<Cell> cell_array;
     vector<Net> net_array;
     vector<vector<intg>> cell_s_net;
-    vector<vector<intg>> cell_s_effect;
+    vector<set<intg>> cell_s_effect;
 
     vector<intg> cell_group;
 
@@ -85,6 +85,7 @@ public:
     void init(FM *_fm);
     void calculate_gain(intg c_id);
     void reset_lock();
+    void reconstruct_bucket();
 
     // NOTE: Only for fm loop usage, if you want final answer, please call
     // flush_cell_group() and then call cut_size();
