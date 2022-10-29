@@ -85,15 +85,15 @@ BucketElement FMMetaData::get_candidate() {
 }
 
 bool FMMetaData::is_legal_group_size(intg c_id) {
-    auto &fm = *fmptr;
+    auto &c = fmptr->cell_array[c_id];
     intg new_g0_sz = g0_sz;
     intg new_g1_sz = g1_sz;
     if (cell_group[c_id] == 0) {
-        new_g0_sz -= fm.cell_array[c_id].get_size(0);
-        new_g1_sz += fm.cell_array[c_id].get_size(1);
+        new_g0_sz -= c.sz0;
+        new_g1_sz += c.sz1;
     } else {
-        new_g1_sz -= fm.cell_array[c_id].get_size(1);
-        new_g0_sz += fm.cell_array[c_id].get_size(0);
+        new_g1_sz -= c.sz1;
+        new_g0_sz += c.sz0;
     }
     return group_valid(new_g0_sz, new_g1_sz);
 }

@@ -12,6 +12,8 @@ class Cell {
 public:
     intg index;
     vector<intg> sz;
+    intg sz0;
+    intg sz1;
     intg group_number;
     vector<intg> net_indexs;
     intg size_reduction_meta_ans;
@@ -25,8 +27,10 @@ public:
           group_number(_group_number),
           cell_name(_name) {
         size_reduction_meta_ans = sz[0] - sz[1];
+        sz0 = sz[0];
+        sz1 = sz[1];
     }
-    intg get_size(intg x) { return sz[x]; }
+    inline intg get_size(intg x) { return (x == 0) ? sz0 : sz1; }
     intg avg_size() { return (sz[0] + sz[1]) / 2; }
     intg max_size() { return max(sz[0], sz[1]); }
     intg min_size() { return min(sz[0], sz[1]); }
