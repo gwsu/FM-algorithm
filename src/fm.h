@@ -82,6 +82,18 @@ public:
         done = rhs.done;
         fmptr = rhs.fmptr;
     }
+
+    void copy(FMMetaData &rhs) {
+        // b = rhs.b;
+        hyperedge_part = rhs.hyperedge_part;
+        // gain = rhs.gain;
+        cell_group = rhs.cell_group;
+        g0_sz = rhs.g0_sz;
+        g1_sz = rhs.g1_sz;
+        // done = rhs.done;
+        fmptr = rhs.fmptr;
+    }
+
     void init(FM *_fm);
     void calculate_gain(intg c_id);
     void reset_lock();

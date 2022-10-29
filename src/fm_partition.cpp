@@ -119,9 +119,9 @@ void FM::initial_partition() {
 }
 void FM::fm_partition() {
     // calculate initial gain
-    FMMetaData now;
     FMMetaData best_fm_data;
     best_fm_data.init(this);
+    FMMetaData now = best_fm_data;
 
     // FM loop here
     intg best_cost = best_fm_data.get_cut_size();
@@ -134,7 +134,7 @@ void FM::fm_partition() {
     double tstart, tend;
     std::chrono::time_point<std::chrono::high_resolution_clock> t_start, t_end;
     while (true) {
-        now = best_fm_data;
+        now.copy(best_fm_data);
         now.reset_lock();
         now.reconstruct_bucket();
 
@@ -149,7 +149,7 @@ void FM::fm_partition() {
             tmp_cost -= cost_improvement;
             if (best_cost > tmp_cost) {
                 best_cost = tmp_cost;
-                best_fm_data = now;
+                best_fm_data.copy(now);
                 had_improved = true;
             }
         }
