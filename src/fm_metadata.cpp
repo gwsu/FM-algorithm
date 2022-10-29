@@ -75,8 +75,7 @@ intg FMMetaData::get_cut_size() {
 BucketElement FMMetaData::get_candidate() {
     // find the maximum gain value
     for (auto &candidate : b.st) {
-        if (!done[candidate.cell_idx] &&
-            is_legal_group_size(candidate.cell_idx)) {
+        if (is_legal_group_size(candidate.cell_idx)) {
             return candidate;
         }
     }
