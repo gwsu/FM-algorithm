@@ -20,7 +20,7 @@ public:
     vector<Cell> cell_array;
     vector<Net> net_array;
     vector<vector<intg>> cell_s_net;
-    vector<unordered_set<intg>> cell_s_effect;
+    vector<vector<intg>> cell_s_effect;
 
     vector<intg> cell_group;
 
