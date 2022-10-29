@@ -209,16 +209,11 @@ intg FMMetaData::update() {
     }
 
     // update gain
-    update_done = vector<bool>(fm.num_cell, false);
-    update_done[c_id] = true;
-    for (const auto &n : fm.cell_s_net[c_id]) {
-        for (const auto &effect_c : fm.net_array[n].cell_indexs) {
-            if (!done[effect_c] && !update_done[effect_c]) {
-                b.remove_element(effect_c, gain[effect_c]);
-                calculate_gain(effect_c);
-                b.add_element(effect_c, gain[effect_c]);
-                update_done[effect_c] = true;
-            }
+    for (auto &effect_c : fm.cell_s_effect[c_id]) {
+        if (!done[effect_c]) {
+            b.remove_element(effect_c, gain[effect_c]);
+            calculate_gain(effect_c);
+            b.add_element(effect_c, gain[effect_c]);
         }
     }
 

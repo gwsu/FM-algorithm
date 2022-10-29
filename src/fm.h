@@ -20,6 +20,7 @@ public:
     vector<Cell> cell_array;
     vector<Net> net_array;
     vector<vector<intg>> cell_s_net;
+    vector<unordered_set<intg>> cell_s_effect;
 
     vector<intg> cell_group;
 
@@ -63,7 +64,6 @@ public:
     intg g1_sz;
 
     vector<bool> done;
-    vector<bool> update_done;
 
     FM *fmptr;
 
@@ -80,7 +80,6 @@ public:
         g0_sz = rhs.g0_sz;
         g1_sz = rhs.g1_sz;
         done = rhs.done;
-        update_done = rhs.update_done;
         fmptr = rhs.fmptr;
     }
     void init(FM *_fm);
