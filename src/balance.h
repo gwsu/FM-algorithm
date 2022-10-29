@@ -19,7 +19,7 @@ inline intg get_group_size(FM &fm, Group &group) {
 }
 
 inline bool group_valid(intg g0_sz, intg g1_sz) {
-    return abs(g0_sz - g1_sz) < (abs(g0_sz + g1_sz) / 10.0);
+    return abs(g0_sz - g1_sz) < ((g0_sz + g1_sz) / 10.0);
 }
 
 
