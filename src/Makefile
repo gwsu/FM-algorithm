@@ -54,6 +54,7 @@ benchmark: packing_gz
 	cd ../HW2_grading && bash HW2_grading.sh
 
 upload: packing_gz
+	ssh g111062506@ic 'rm -rf ~/hw2/HW2_grading'
 	scp -r ../HW2_grading g111062506@ic:~/hw2
 	scp CS6135_HW2_111062506.tar.gz g111062506@ic:~/hw2/HW2_grading/student/111062506/
 	cd .. && scp -r src g111062506@ic:~/hw2/HW2_grading/
