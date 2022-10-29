@@ -1,12 +1,13 @@
 CXX = g++
-# CXXFLAGS = -std=c++17 -O3
-CXXFLAGS = -std=c++17 -g  -Wall -Wextra -Wconversion -pedantic -DDEBUG
+CXXFLAGS = -std=c++17 -O3
+# CXXFLAGS = -std=c++17 -g  -Wall -Wextra -pedantic -DDEBUG
 
 LIBS = cell.o \
 	   fm_parse.o \
 	   fm_partition.o \
 	   fm_output.o \
 	   fm_cut.o \
+	   fm_metadata.o \
 
 RES = main.cpp
 EXE = ../bin/hw2
@@ -26,6 +27,21 @@ test:
 	-rm $(OUTPUT_DIR)/*.out
 	time ./$(EXE) $(TESTCASE_DIR)/p2-$(CASE).cells $(TESTCASE_DIR)/p2-$(CASE).nets $(OUTPUT_DIR)/p2-$(CASE).out
 	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-$(CASE).cells $(TESTCASE_DIR)/p2-$(CASE).nets $(OUTPUT_DIR)/p2-$(CASE).out
+
+testall:
+	-rm $(OUTPUT_DIR)/*.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-0.cells $(TESTCASE_DIR)/p2-0.nets $(OUTPUT_DIR)/p2-0.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-0.cells $(TESTCASE_DIR)/p2-0.nets $(OUTPUT_DIR)/p2-0.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-1.cells $(TESTCASE_DIR)/p2-1.nets $(OUTPUT_DIR)/p2-1.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-1.cells $(TESTCASE_DIR)/p2-1.nets $(OUTPUT_DIR)/p2-1.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-2.cells $(TESTCASE_DIR)/p2-2.nets $(OUTPUT_DIR)/p2-2.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-2.cells $(TESTCASE_DIR)/p2-2.nets $(OUTPUT_DIR)/p2-2.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-3.cells $(TESTCASE_DIR)/p2-3.nets $(OUTPUT_DIR)/p2-3.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-3.cells $(TESTCASE_DIR)/p2-3.nets $(OUTPUT_DIR)/p2-3.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-4.cells $(TESTCASE_DIR)/p2-4.nets $(OUTPUT_DIR)/p2-4.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-4.cells $(TESTCASE_DIR)/p2-4.nets $(OUTPUT_DIR)/p2-4.out
+	time ./$(EXE) $(TESTCASE_DIR)/p2-5.cells $(TESTCASE_DIR)/p2-5.nets $(OUTPUT_DIR)/p2-5.out
+	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-5.cells $(TESTCASE_DIR)/p2-5.nets $(OUTPUT_DIR)/p2-5.out
 
 clean:
 	-rm $(EXE)

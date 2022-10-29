@@ -36,6 +36,7 @@ void FM::init(string cell_file, string net_file) {
         counter++;
     }
     cell_fs.close();
+    cell_s_net = vector<vector<intg>>(cell_array.size());
 
     // net
     fstream net_fs;
@@ -60,9 +61,10 @@ void FM::init(string cell_file, string net_file) {
             auto idx = cell_name_to_cell_idx[cell_idx];
             cell_id.emplace_back(idx);
             cell_array[idx].net_indexs.emplace_back(counter);
+            cell_s_net[idx].emplace_back(counter);
         }
 
-        n.index = counter + 1;
+        n.index = counter;
         n.net_name = net_name;
         n.number_of_element = cell_id.size();
         n.cell_indexs = cell_id;
@@ -72,6 +74,8 @@ void FM::init(string cell_file, string net_file) {
     }
     net_fs.close();
     cout << "Net : " << counter << endl;
+
+    initial_internal_parameter();
 }
 
 }  // namespace std

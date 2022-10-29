@@ -33,9 +33,8 @@ public:
     intg max_group() { return (max_size() == sz[0]) ? 0 : 1; }
     intg min_group() { return (min_size() == sz[0]) ? 0 : 1; }
     intg current_size() { return sz[group_number]; }
-    intg size_reduction() {
-        return current_size() *
-               (size_reduction_meta_ans * ((group_number == 0) ? 1 : -1));
+    intg size_reduction(intg current_g) {
+        return (size_reduction_meta_ans * ((current_g == 0) ? 1 : -1));
     }
     void set_group(intg g) { group_number = g; }
 };

@@ -25,19 +25,20 @@ inline bool group_valid(intg g0_sz, intg g1_sz) {
 
 inline intg greedy_swap_candidate(FM &fm, Group &g, vector<bool> &done) {
     // NOTE: I use max cell size reduction, if move to the other group.
-    return *max_element(g.cell_index.begin(), g.cell_index.end(),
-                        [&](const auto &lhs, const auto &rhs) {
-                            if (done[lhs] && !done[rhs]) {
-                                return true;
-                            } else if (!done[lhs] && done[rhs]) {
-                                return false;
-                            } else {
-                                // return fm.cell_array[lhs].size_reduction() <
-                                //        fm.cell_array[rhs].size_reduction();
-                                return fm.cell_array[lhs].current_size() <
-                                       fm.cell_array[rhs].current_size();
-                            }
-                        });
+    return *max_element(
+        g.cell_index.begin(), g.cell_index.end(),
+        [&](const auto &lhs, const auto &rhs) {
+            if (done[lhs] && !done[rhs]) {
+                return true;
+            } else if (!done[lhs] && done[rhs]) {
+                return false;
+            } else {
+                return fm.cell_array[lhs].size_reduction(fm.cell_group[lhs]) <
+                       fm.cell_array[rhs].size_reduction(fm.cell_group[rhs]);
+                // return fm.cell_array[lhs].get_size(fm.cell_group[lhs]) <
+                //        fm.cell_array[rhs].get_size(fm.cell_group[rhs]);
+            }
+        });
 }
 
 
