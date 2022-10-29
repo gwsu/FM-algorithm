@@ -49,6 +49,24 @@ clean:
 	-rm $(LIBS)
 	-rm $(OUTPUT_DIR)/*.out
 
+benchmark: packing_gz
+	mv CS6135_HW2_111062506.tar.gz ../HW2_grading/student/111062506/
+	cd ../HW2_grading && bash HW2_grading.sh
+
+upload: packing_gz
+	scp -r ../HW2_grading g111062506@ic:~/hw2/
+	scp CS6135_HW2_111062506.tar.gz g111062506@ic:~/hw2/HW2_grading/student/111062506/
+
+packing_gz: all
+	-rm -rf HW2 CS6135_HW2_111062506.tar.gz
+	mkdir -p HW2/src
+	cp *.cpp HW2/src/
+	cp *.h HW2/src/
+	cp -r ../output/ HW2/
+	cp -r ../bin/ HW2/
+	tar -zcvf CS6135_HW2_111062506.tar.gz HW2/
+	-rm -rf HW2
+
 # send_cases:
 # 	scp -r testcases g111062506@ic:~/hw2
 
