@@ -20,9 +20,16 @@ inline intg get_group_size(FM &fm, Group &group) {
 
 const fp err = 1.0;
 inline bool group_valid(intg g0_sz, intg g1_sz, bool fixed = false) {
-    return abs(static_cast<fp>(g0_sz) - static_cast<fp>(g1_sz)) <
-           ((static_cast<fp>(g0_sz) + static_cast<fp>(g1_sz)) /
-            (10.0 - ((fixed) ? err : 0.0)));
+    // return abs(static_cast<fp>(g0_sz) - static_cast<fp>(g1_sz)) <
+    //        ((static_cast<fp>(g0_sz) + static_cast<fp>(g1_sz)) /
+    //         (10.0 - ((fixed) ? err : 0.0)));
+    return (g0_sz >= g1_sz) ? (9 * g0_sz < 11 * g1_sz)
+                            : (9 * g1_sz < 11 * g0_sz);
+    // if (g0_sz >= g1_sz) {
+    //     return 9 * g0_sz < 11 * g1_sz;
+    // } else {
+    //     return 9 * g1_sz < 11 * g0_sz;
+    // }
 }
 
 

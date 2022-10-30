@@ -172,7 +172,7 @@ void FM::fm_partition() {
         // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
         // the best_cost anymore.
         for (int i = 0; i < half_cell; ++i) {
-            cost_improvement = now.update();
+            cost_improvement = now.update(epoch);
 
             // NOTE: based on my experiment, when i > 75% of cell, it couldn't
             // find the suitable candidate and will break this pass, even at the

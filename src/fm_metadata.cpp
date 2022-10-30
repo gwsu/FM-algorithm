@@ -74,6 +74,8 @@ intg FMMetaData::get_cut_size() {
     return num_cut;
 }
 
+const intg max_found = 50;
+
 BucketElement FMMetaData::get_candidate(bool overall) {
     if (overall) {
         for (auto &candidate : b.st) {
@@ -83,48 +85,38 @@ BucketElement FMMetaData::get_candidate(bool overall) {
         return {};
     }
 
-    auto g0_it = b.st0.begin();
-    auto g1_it = b.st1.begin();
-    for (int i = 0; i < 10; ++i) {
-        if (g0_it == b.st0.end() && g1_it == b.st1.end()) {
-            return {};
-        } else if (g0_it == b.st0.end()) {
-            if (is_legal_group_size((*g1_it).cell_idx)) {
-                return *g1_it;
-            } else {
-                g1_it++;
-                continue;
-            }
-        } else if (g1_it == b.st1.end()) {
-            if (is_legal_group_size((*g0_it).cell_idx)) {
-                return *g0_it;
-            } else {
-                g0_it++;
-                continue;
-            }
+    intg g0 = 0;
+    intg g1 = 0;
+    BucketElement c0;
+    BucketElement c1;
+    for (auto &c : b.st0) {
+        if (is_legal_group_size(c.cell_idx)) {
+            c0 = c;
+            break;
         }
-        auto &g0 = *g0_it;
-        auto &g1 = *g1_it;
-        if (g0.gain_value > g1.gain_value) {
-            if (is_legal_group_size(g0.cell_idx)) {
-                return g0;
-            } else if (is_legal_group_size(g1.cell_idx)) {
-                return g1;
-            } else {
-                g0_it++;
-                g1_it++;
-            }
-        } else {
-            if (is_legal_group_size(g1.cell_idx)) {
-                return g1;
-            } else if (is_legal_group_size(g0.cell_idx)) {
-                return g0;
-            } else {
-                g0_it++;
-                g1_it++;
-            }
-        }
+        g0++;
+        if (g0 > max_found)
+            break;
     }
+    for (auto &c : b.st1) {
+        if (is_legal_group_size(c.cell_idx)) {
+            c1 = c;
+            break;
+        }
+        g1++;
+        if (g1 > max_found)
+            break;
+    }
+
+    if (c0.empty() && c1.empty())
+        return {};
+    else if (c0.empty())
+        return c1;
+    else if (c1.empty())
+        return c0;
+    else
+        return (c0.gain_value > c1.gain_value) ? c0 : c1;
+
     return {};
 }
 
