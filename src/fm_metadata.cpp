@@ -74,7 +74,15 @@ intg FMMetaData::get_cut_size() {
     return num_cut;
 }
 
-BucketElement FMMetaData::get_candidate() {
+BucketElement FMMetaData::get_candidate(bool overall) {
+    if (overall) {
+        for (auto &candidate : b.st) {
+            if (is_legal_group_size(candidate.cell_idx))
+                return candidate;
+        }
+        return {};
+    }
+
     auto g0_it = b.st0.begin();
     auto g1_it = b.st1.begin();
     for (int i = 0; i < 10; ++i) {
@@ -141,6 +149,7 @@ void FMMetaData::reset_lock() {
 void FMMetaData::reconstruct_bucket() {
     b.st0.clear();
     b.st1.clear();
+    b.st.clear();
     for (int i = 0; i < fmptr->num_cell; ++i) {
         calculate_gain(i);
         b.add_element(cell_group[i], i, gain[i]);

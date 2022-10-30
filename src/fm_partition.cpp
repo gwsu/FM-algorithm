@@ -213,10 +213,10 @@ void FM::fm_partition() {
 #endif
 }
 
-intg FMMetaData::update() {
+intg FMMetaData::update(intg epoch) {
     auto &fm = *fmptr;
     // find best gain candidate
-    BucketElement cell_id_gain_value = get_candidate();
+    BucketElement cell_id_gain_value = get_candidate(epoch == 0);
 
     if (cell_id_gain_value.empty())
         return INVALID;

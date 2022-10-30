@@ -68,7 +68,7 @@ public:
 
     FM *fmptr;
 
-    BucketElement get_candidate();
+    BucketElement get_candidate(bool overall);
     bool is_legal_group_size(intg c_id);
 
 public:
@@ -124,7 +124,7 @@ public:
     // flush_cell_group() and then call cut_size();
     intg get_cut_size();
 
-    intg update();
+    intg update(intg epoch);
 };  // namespace std
 
 }  // namespace std
