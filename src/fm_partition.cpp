@@ -69,6 +69,24 @@ void FM::initial_partition() {
         }
     }
 
+    refinement(g0_sz, g1_sz);
+
+    flush_cell_group();
+#ifdef DEBUG
+    cout << "===================================================" << endl;
+    cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;
+    cout << "group 1 size : " << get_group_size(*this, group_array[1]) << endl;
+    cout << "Cut : " << cut_size() << endl;
+    cout << "Valid : " << group_valid(g0_sz, g1_sz) << endl;
+#endif
+}
+
+
+void FM::refinement(intg g0_sz, intg g1_sz) {
+    FMMetaData for_gain_calculation;
+    vector<intg> _gain(num_cell, 0);
+    for_gain_calculation.only_gain(_gain, this);
+
     intg counter = 0;
     vector<bool> moved(num_cell, false);
     intg from_group = -1;
@@ -86,8 +104,8 @@ void FM::initial_partition() {
                 to_group = 0;
             }
 
-            auto change_cell =
-                greedy_swap_candidate(*this, group_array[from_group], moved);
+            auto change_cell = greedy_swap_candidate(
+                *this, group_array[from_group], moved, _gain);
             moved[change_cell] = true;
             group_array[from_group].remove_cell(change_cell);
             group_array[to_group].add_cell(change_cell);
@@ -108,17 +126,12 @@ void FM::initial_partition() {
         }
         counter += inner_counter;
     }
-
-    flush_cell_group();
 #ifdef DEBUG
-    cout << "Swap : " << counter << " Times." << endl;
-    cout << "===================================================" << endl;
-    cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;
-    cout << "group 1 size : " << get_group_size(*this, group_array[1]) << endl;
-    cout << "Cut : " << cut_size() << endl;
-    cout << "Valid : " << group_valid(g0_sz, g1_sz) << endl;
+    cout << "Refine : " << counter << " Times." << endl;
 #endif
 }
+
+
 void FM::fm_partition() {
     // calculate initial gain
     FMMetaData best_fm_data;
@@ -128,6 +141,7 @@ void FM::fm_partition() {
     // FM loop here
     intg best_cost = best_fm_data.get_cut_size();
     intg tmp_cost;
+    intg prev_cost;
 
     intg cost_improvement = INVALID;
     // Does this pass improve the cut size?
@@ -143,6 +157,7 @@ void FM::fm_partition() {
 
         had_improved = false;
         tmp_cost = best_cost;
+        prev_cost = best_cost;
 #ifdef DEBUG
         t_start = std::chrono::high_resolution_clock::now();
 #endif
@@ -169,12 +184,27 @@ void FM::fm_partition() {
         cout << "Best cost: " << best_cost << endl;
 #endif
 
+
         if (!had_improved) {
+            break;
+        } else if ((static_cast<fp>(prev_cost - best_cost) /
+                    static_cast<fp>(prev_cost)) < 0.03) {
             break;
         }
     }
     cell_group = best_fm_data.cell_group;
     flush_cell_group();
+    intg g0_sz = best_fm_data.g0_sz;
+    intg g1_sz = best_fm_data.g1_sz;
+
+    if (!group_valid(g0_sz, g1_sz)) {
+        refinement(g0_sz, g1_sz);
+        flush_cell_group();
+#ifndef DEBUG
+        cout << "Cut : " << cut_size() << endl;
+#endif
+    }
+
 #ifdef DEBUG
     cout << "=======================================" << endl;
     cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;

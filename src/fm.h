@@ -36,6 +36,7 @@ public:
 
     void initial_partition();
     void fm_partition();
+    void refinement(intg g0_sz, intg g1_sz);
 
 public:
     FM() { group_array = vector<Group>{Group{0}, Group{1}}; }
@@ -72,6 +73,26 @@ public:
 
 public:
     FMMetaData() {}
+    void only_gain(vector<intg> &g, FM *fm) {
+        fmptr = fm;
+        hyperedge_part = vector<intg>(fm->num_net, 0);
+        gain = vector<intg>(fm->num_cell, 0);
+        cell_group = fm->cell_group;
+        for (int i = 0; i < fm->num_cell; ++i) {
+            if (fm->cell_group[i] == 0) {
+                for (const auto &n : fm->cell_s_net[i]) {
+                    hyperedge_part[n]++;
+                }
+            }
+        }
+
+        // calculate gain
+        for (int i = 0; i < fm->num_cell; ++i) {
+            calculate_gain(i);
+            g[i] = gain[i];
+        }
+    }
+
     FMMetaData(FMMetaData &rhs) {
         b = rhs.b;
         hyperedge_part = rhs.hyperedge_part;
