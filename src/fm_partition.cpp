@@ -161,8 +161,15 @@ void FM::fm_partition() {
 #ifdef DEBUG
         t_start = std::chrono::high_resolution_clock::now();
 #endif
-        for (int i = 0; i < num_cell - 1; ++i) {
+        intg half_cell = num_cell / 2;
+        // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
+        // the best_cost anymore.
+        for (int i = 0; i < half_cell; ++i) {
             cost_improvement = now.update();
+
+            // NOTE: based on my experiment, when i > 75% of cell, it couldn't
+            // find the suitable candidate and will break this pass, even at the
+            // first pass.
             if (cost_improvement == INVALID)
                 break;
 
