@@ -1,3 +1,5 @@
+#include <iterator>
+
 #include "balance.h"
 #include "bucket.h"
 #include "fm.h"
@@ -73,24 +75,46 @@ intg FMMetaData::get_cut_size() {
 }
 
 BucketElement FMMetaData::get_candidate() {
-    auto &g0_candidate = *b.st0.begin();
-    auto &g1_candidate = *b.st1.begin();
-
-    if (g0_candidate.gain_value > g1_candidate.gain_value) {
-        if (is_legal_group_size(g0_candidate.cell_idx)) {
-            return g0_candidate;
-        } else if (is_legal_group_size(g1_candidate.cell_idx)) {
-            return g1_candidate;
-        } else {
+    auto g0_it = b.st0.begin();
+    auto g1_it = b.st1.begin();
+    for (int i = 0; i < 10; ++i) {
+        if (g0_it == b.st0.end() && g1_it == b.st1.end()) {
             return {};
+        } else if (g0_it == b.st0.end()) {
+            if (is_legal_group_size((*g1_it).cell_idx)) {
+                return *g1_it;
+            } else {
+                g1_it++;
+                continue;
+            }
+        } else if (g1_it == b.st1.end()) {
+            if (is_legal_group_size((*g0_it).cell_idx)) {
+                return *g0_it;
+            } else {
+                g0_it++;
+                continue;
+            }
         }
-    } else {
-        if (is_legal_group_size(g1_candidate.cell_idx)) {
-            return g1_candidate;
-        } else if (is_legal_group_size(g0_candidate.cell_idx)) {
-            return g0_candidate;
+        auto &g0 = *g0_it;
+        auto &g1 = *g1_it;
+        if (g0.gain_value > g1.gain_value) {
+            if (is_legal_group_size(g0.cell_idx)) {
+                return g0;
+            } else if (is_legal_group_size(g1.cell_idx)) {
+                return g1;
+            } else {
+                g0_it++;
+                g1_it++;
+            }
         } else {
-            return {};
+            if (is_legal_group_size(g1.cell_idx)) {
+                return g1;
+            } else if (is_legal_group_size(g0.cell_idx)) {
+                return g0;
+            } else {
+                g0_it++;
+                g1_it++;
+            }
         }
     }
     return {};
