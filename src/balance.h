@@ -18,8 +18,11 @@ inline intg get_group_size(FM &fm, Group &group) {
                       });
 }
 
-inline bool group_valid(intg g0_sz, intg g1_sz) {
-    return abs(g0_sz - g1_sz) < ((g0_sz + g1_sz) / 10.0);
+const fp err = 1.0;
+inline bool group_valid(intg g0_sz, intg g1_sz, bool fixed = false) {
+    return abs(static_cast<fp>(g0_sz) - static_cast<fp>(g1_sz)) <
+           ((static_cast<fp>(g0_sz) + static_cast<fp>(g1_sz)) /
+            (10.0 - ((fixed) ? err : 0.0)));
 }
 
 
