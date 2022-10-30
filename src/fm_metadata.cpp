@@ -131,7 +131,7 @@ bool FMMetaData::is_legal_group_size(intg c_id) {
         new_g1_sz -= c.sz1;
         new_g0_sz += c.sz0;
     }
-    return group_valid(new_g0_sz, new_g1_sz, true);
+    return group_valid(new_g0_sz, new_g1_sz /* , true */);
 }
 
 void FMMetaData::reset_lock() {

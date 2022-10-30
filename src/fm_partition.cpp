@@ -188,7 +188,7 @@ void FM::fm_partition() {
         if (!had_improved) {
             break;
         } else if ((static_cast<fp>(prev_cost - best_cost) /
-                    static_cast<fp>(prev_cost)) < 0.03) {
+                    static_cast<fp>(prev_cost)) < 0.01) {
             break;
         }
     }
