@@ -39,18 +39,26 @@ public:
 
 class Bucket {
 public:
-    set<BucketElement> st;
+    set<BucketElement> st0;
+    set<BucketElement> st1;
 
 public:
     Bucket() {}
     Bucket(Bucket &rhs) {
-        st = set<BucketElement>(rhs.st.begin(), rhs.st.end());
+        st0 = set<BucketElement>(rhs.st0.begin(), rhs.st0.end());
+        st1 = set<BucketElement>(rhs.st1.begin(), rhs.st1.end());
     }
-    void add_element(intg cell_idx, intg gain_value) {
-        st.emplace(BucketElement{cell_idx, gain_value});
+    void add_element(intg cell_group, intg cell_idx, intg gain_value) {
+        if (cell_group == 0)
+            st0.emplace(BucketElement{cell_idx, gain_value});
+        else
+            st1.emplace(BucketElement{cell_idx, gain_value});
     }
-    void remove_element(intg cell_idx, intg gain_value) {
-        st.erase(BucketElement{cell_idx, gain_value});
+    void remove_element(intg cell_group, intg cell_idx, intg gain_value) {
+        if (cell_group == 0)
+            st0.erase(BucketElement{cell_idx, gain_value});
+        else
+            st1.erase(BucketElement{cell_idx, gain_value});
     }
 };
 

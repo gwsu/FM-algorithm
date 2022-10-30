@@ -26,7 +26,7 @@ void FMMetaData::init(FM *_fm) {
     // calculate gain
     for (int i = 0; i < fm.num_cell; ++i) {
         calculate_gain(i);
-        b.add_element(i, gain[i]);
+        b.add_element(cell_group[i], i, gain[i]);
     }
 }
 
@@ -73,13 +73,26 @@ intg FMMetaData::get_cut_size() {
 }
 
 BucketElement FMMetaData::get_candidate() {
-    // find the maximum gain value
-    for (auto &candidate : b.st) {
-        if (is_legal_group_size(candidate.cell_idx)) {
-            return candidate;
+    auto &g0_candidate = *b.st0.begin();
+    auto &g1_candidate = *b.st1.begin();
+
+    if (g0_candidate.gain_value > g1_candidate.gain_value) {
+        if (is_legal_group_size(g0_candidate.cell_idx)) {
+            return g0_candidate;
+        } else if (is_legal_group_size(g1_candidate.cell_idx)) {
+            return g1_candidate;
+        } else {
+            return {};
+        }
+    } else {
+        if (is_legal_group_size(g1_candidate.cell_idx)) {
+            return g1_candidate;
+        } else if (is_legal_group_size(g0_candidate.cell_idx)) {
+            return g0_candidate;
+        } else {
+            return {};
         }
     }
-
     return {};
 }
 
@@ -102,10 +115,11 @@ void FMMetaData::reset_lock() {
 }
 
 void FMMetaData::reconstruct_bucket() {
-    b.st.clear();
+    b.st0.clear();
+    b.st1.clear();
     for (int i = 0; i < fmptr->num_cell; ++i) {
         calculate_gain(i);
-        b.add_element(i, gain[i]);
+        b.add_element(cell_group[i], i, gain[i]);
     }
 }
 
