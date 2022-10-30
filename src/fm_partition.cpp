@@ -110,12 +110,14 @@ void FM::initial_partition() {
     }
 
     flush_cell_group();
+#ifdef DEBUG
     cout << "Swap : " << counter << " Times." << endl;
     cout << "===================================================" << endl;
     cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;
     cout << "group 1 size : " << get_group_size(*this, group_array[1]) << endl;
     cout << "Cut : " << cut_size() << endl;
     cout << "Valid : " << group_valid(g0_sz, g1_sz) << endl;
+#endif
 }
 void FM::fm_partition() {
     // calculate initial gain
@@ -131,8 +133,9 @@ void FM::fm_partition() {
     // Does this pass improve the cut size?
     bool had_improved = false;
     intg counter = 0;
-    double tstart, tend;
+#ifdef DEBUG
     std::chrono::time_point<std::chrono::high_resolution_clock> t_start, t_end;
+#endif
     while (true) {
         now.copy(best_fm_data);
         now.reset_lock();
@@ -140,7 +143,9 @@ void FM::fm_partition() {
 
         had_improved = false;
         tmp_cost = best_cost;
+#ifdef DEBUG
         t_start = std::chrono::high_resolution_clock::now();
+#endif
         for (int i = 0; i < num_cell - 1; ++i) {
             cost_improvement = now.update();
             if (cost_improvement == INVALID)
@@ -153,11 +158,16 @@ void FM::fm_partition() {
                 had_improved = true;
             }
         }
+#ifdef DEBUG
         t_end = std::chrono::high_resolution_clock::now();
+
         cout << "Best cost: " << best_cost << ", "
              << std::chrono::duration<double, std::milli>(t_end - t_start)
                     .count()
              << " millisecond" << endl;
+#else
+        cout << "Best cost: " << best_cost << endl;
+#endif
 
         if (!had_improved) {
             break;
@@ -165,10 +175,12 @@ void FM::fm_partition() {
     }
     cell_group = best_fm_data.cell_group;
     flush_cell_group();
+#ifdef DEBUG
     cout << "=======================================" << endl;
     cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;
     cout << "group 1 size : " << get_group_size(*this, group_array[1]) << endl;
     cout << "Cut : " << cut_size() << endl;
+#endif
 }
 
 intg FMMetaData::update() {

@@ -79,8 +79,10 @@ void FM::init(string cell_file, string net_file) {
         counter++;
     }
     net_fs.close();
+#ifdef DEBUG
     cout << "Cell: " << cell_array.size() << endl;
     cout << "Net : " << net_array.size() << endl;
+#endif
 
     initial_internal_parameter();
 }
