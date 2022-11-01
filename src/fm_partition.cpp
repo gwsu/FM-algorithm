@@ -153,6 +153,8 @@ void FM::fm_partition() {
 #endif
 
     intg epoch = 0;
+    vector<intg> record;
+    record.reserve(num_cell);
     while (true) {
         now.copy(best_fm_data);
         now.reset_lock();
@@ -161,6 +163,7 @@ void FM::fm_partition() {
         had_improved = false;
         tmp_cost = best_cost;
         prev_cost = best_cost;
+        record.clear();
 #ifdef DEBUG
         t_start = std::chrono::high_resolution_clock::now();
 #endif
@@ -172,8 +175,8 @@ void FM::fm_partition() {
         intg half_cell = (num_cell / 2) / ((epoch == 0) ? 1 : 10);
         // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
         // the best_cost anymore.
-        for (int i = 0; i < half_cell; ++i) {
-            cost_improvement = now.update(global_start, epoch);
+        for (int i = 0; i < num_cell; ++i) {
+            cost_improvement = now.update(global_start, -1, record);
 
             // NOTE: based on my experiment, when i > 75% of cell, it couldn't
             // find the suitable candidate and will break this pass, even at the
@@ -184,10 +187,13 @@ void FM::fm_partition() {
             tmp_cost -= cost_improvement;
             if (best_cost > tmp_cost) {
                 best_cost = tmp_cost;
-                best_fm_data.copy(now);
+                // best_fm_data.copy(now);
                 had_improved = true;
             }
         }
+
+
+
 #ifdef DEBUG
         t_end = std::chrono::high_resolution_clock::now();
 
@@ -206,8 +212,21 @@ void FM::fm_partition() {
 
         if (!had_improved) {
             break;
-        } else if ((static_cast<fp>(prev_cost - best_cost) /
-                    static_cast<fp>(prev_cost)) < 0.01) {
+        }
+
+        // replay
+        tmp_cost = prev_cost;
+        best_fm_data.reset_lock();
+        best_fm_data.reconstruct_bucket();
+        for (int i = 0; i < num_cell; ++i) {
+            cost_improvement = best_fm_data.update(global_end, i, record);
+            tmp_cost -= cost_improvement;
+            if (tmp_cost <= best_cost)
+                break;
+        }
+
+        if ((static_cast<fp>(prev_cost - best_cost) /
+             static_cast<fp>(prev_cost)) < 0.01) {
             break;
         } else if (duration > time_limit) {
             cout << "Time out break" << endl;
@@ -238,7 +257,8 @@ void FM::fm_partition() {
 
 intg FMMetaData::update(
     std::chrono::time_point<std::chrono::high_resolution_clock> start,
-    intg epoch) {
+    intg mode,
+    vector<intg> &record) {
     auto &fm = *fmptr;
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -249,7 +269,13 @@ intg FMMetaData::update(
     }
 
     // find best gain candidate
-    BucketElement cell_id_gain_value = get_candidate(epoch == 0);
+    BucketElement cell_id_gain_value;
+    if (mode == -1) {
+        cell_id_gain_value = get_candidate(true);
+        record.emplace_back(cell_id_gain_value.cell_idx);
+    } else {
+        cell_id_gain_value = BucketElement{record[mode], gain[record[mode]]};
+    }
 
     if (cell_id_gain_value.empty())
         return INVALID;

@@ -131,7 +131,8 @@ public:
 
     intg update(
         std::chrono::time_point<std::chrono::high_resolution_clock> start,
-        intg epoch);
+        intg mode,
+        vector<intg> &record);
 };  // namespace std
 
 }  // namespace std
