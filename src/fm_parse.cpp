@@ -9,6 +9,7 @@
 namespace std {
 
 void FM::init(string cell_file, string net_file) {
+    global_start = std::chrono::high_resolution_clock::now();
     // cell
     fstream cell_fs;
     cell_fs.open(cell_file.c_str(), fstream::in);

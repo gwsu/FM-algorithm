@@ -1,6 +1,7 @@
 #ifndef FM_H_
 #define FM_H_
 
+#include <chrono>
 #include <string>
 #include <unordered_map>
 #include <utility>  // std::pair, std::make_pair
@@ -27,6 +28,10 @@ public:
     unordered_map<string, intg> cell_name_to_cell_idx;
 
     vector<Group> group_array;
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> global_start;
+    std::chrono::time_point<std::chrono::high_resolution_clock> global_end;
+
 
     void initial_internal_parameter() {
         num_cell = cell_array.size();
@@ -124,7 +129,9 @@ public:
     // flush_cell_group() and then call cut_size();
     intg get_cut_size();
 
-    intg update(intg epoch);
+    intg update(
+        std::chrono::time_point<std::chrono::high_resolution_clock> start,
+        intg epoch);
 };  // namespace std
 
 }  // namespace std

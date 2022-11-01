@@ -13,6 +13,7 @@
 #include "group.h"
 
 const intg INVALID = std::numeric_limits<intg>::min();
+const double time_limit = 295;
 
 namespace std {
 
@@ -172,7 +173,7 @@ void FM::fm_partition() {
         // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
         // the best_cost anymore.
         for (int i = 0; i < half_cell; ++i) {
-            cost_improvement = now.update(epoch);
+            cost_improvement = now.update(global_start, epoch);
 
             // NOTE: based on my experiment, when i > 75% of cell, it couldn't
             // find the suitable candidate and will break this pass, even at the
@@ -198,11 +199,18 @@ void FM::fm_partition() {
         cout << "Best cost: " << best_cost << endl;
 #endif
 
+        global_end = std::chrono::high_resolution_clock::now();
+        double duration = std::chrono::duration<double, std::ratio<1, 1>>(
+                              global_end - global_start)
+                              .count();
 
         if (!had_improved) {
             break;
         } else if ((static_cast<fp>(prev_cost - best_cost) /
                     static_cast<fp>(prev_cost)) < 0.01) {
+            break;
+        } else if (duration > time_limit) {
+            cout << "Time out break" << endl;
             break;
         }
         epoch++;
@@ -228,8 +236,18 @@ void FM::fm_partition() {
 #endif
 }
 
-intg FMMetaData::update(intg epoch) {
+intg FMMetaData::update(
+    std::chrono::time_point<std::chrono::high_resolution_clock> start,
+    intg epoch) {
     auto &fm = *fmptr;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    double duration =
+        std::chrono::duration<double, std::ratio<1, 1>>(end - start).count();
+    if (duration > time_limit) {
+        return INVALID;
+    }
+
     // find best gain candidate
     BucketElement cell_id_gain_value = get_candidate(epoch == 0);
 
