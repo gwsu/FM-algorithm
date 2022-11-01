@@ -77,46 +77,12 @@ intg FMMetaData::get_cut_size() {
 const intg max_found = 50;
 
 BucketElement FMMetaData::get_candidate(bool overall) {
-    if (overall) {
-        for (auto &candidate : b.st) {
-            if (is_legal_group_size(candidate.cell_idx))
-                return candidate;
+    for (auto &s : b.m) {
+        for (auto &cell_idx : s.second) {
+            if (is_legal_group_size(cell_idx))
+                return BucketElement{cell_idx, s.first};
         }
-        return {};
     }
-
-    intg g0 = 0;
-    intg g1 = 0;
-    BucketElement c0;
-    BucketElement c1;
-    for (auto &c : b.st0) {
-        if (is_legal_group_size(c.cell_idx)) {
-            c0 = c;
-            break;
-        }
-        g0++;
-        if (g0 > max_found)
-            break;
-    }
-    for (auto &c : b.st1) {
-        if (is_legal_group_size(c.cell_idx)) {
-            c1 = c;
-            break;
-        }
-        g1++;
-        if (g1 > max_found)
-            break;
-    }
-
-    if (c0.empty() && c1.empty())
-        return {};
-    else if (c0.empty())
-        return c1;
-    else if (c1.empty())
-        return c0;
-    else
-        return (c0.gain_value > c1.gain_value) ? c0 : c1;
-
     return {};
 }
 
@@ -135,13 +101,17 @@ bool FMMetaData::is_legal_group_size(intg c_id) {
 }
 
 void FMMetaData::reset_lock() {
-    done = vector<bool>(fmptr->num_cell, false);
+    // done = vector<bool>(fmptr->num_cell, false);
+    auto size = done.size();
+    done.resize(0);
+    done.resize(size, false);
 }
 
 void FMMetaData::reconstruct_bucket() {
-    b.st0.clear();
-    b.st1.clear();
-    b.st.clear();
+    // b.st0.clear();
+    // b.st1.clear();
+    // b.st.clear();
+    b.m.clear();
     for (int i = 0; i < fmptr->num_cell; ++i) {
         calculate_gain(i);
         b.add_element(cell_group[i], i, gain[i]);

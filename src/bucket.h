@@ -2,7 +2,9 @@
 #define BUCKET_H_
 
 #include <iostream>
+#include <map>
 #include <set>
+#include <unordered_set>
 
 #include "type.h"
 
@@ -39,32 +41,41 @@ public:
 
 class Bucket {
 public:
-    set<BucketElement> st0;
-    set<BucketElement> st1;
-    set<BucketElement> st;
+    // set<BucketElement> st0;
+    // set<BucketElement> st1;
+    // set<BucketElement> st;
+
+    // map<intg, unordered_set<BucketElement>, greater<>> m;
+    map<intg, set<intg>, greater<>> m;
 
 public:
     Bucket() {}
     Bucket(Bucket &rhs) {
-        st0 = set<BucketElement>(rhs.st0.begin(), rhs.st0.end());
-        st1 = set<BucketElement>(rhs.st1.begin(), rhs.st1.end());
-        st = set<BucketElement>(rhs.st.begin(), rhs.st.end());
+        // st0 = set<BucketElement>(rhs.st0.begin(), rhs.st0.end());
+        // st1 = set<BucketElement>(rhs.st1.begin(), rhs.st1.end());
+        // st = set<BucketElement>(rhs.st.begin(), rhs.st.end());
+        m = map<intg, set<intg>, greater<>>(rhs.m.begin(), rhs.m.end());
     }
     void add_element(intg cell_group, intg cell_idx, intg gain_value) {
-        if (cell_group == 0)
-            st0.emplace(BucketElement{cell_idx, gain_value});
-        else
-            st1.emplace(BucketElement{cell_idx, gain_value});
-
-        st.emplace(BucketElement{cell_idx, gain_value});
+        auto m_it = m.find(gain_value);
+        if (m_it == m.end()) {
+            set<intg> us;
+            us.insert(cell_idx);
+            m[gain_value] = us;
+        } else {
+            m[gain_value].insert(cell_idx);
+        }
     }
     void remove_element(intg cell_group, intg cell_idx, intg gain_value) {
-        if (cell_group == 0)
-            st0.erase(BucketElement{cell_idx, gain_value});
-        else
-            st1.erase(BucketElement{cell_idx, gain_value});
-
-        st.erase(BucketElement{cell_idx, gain_value});
+        auto m_it = m.find(gain_value);
+        if (m_it != m.end()) {
+            if (m_it->second.size() == 0)
+                return;
+            else if (m_it->second.size() == 1 && m_it->second.count(cell_idx))
+                m.erase(m_it);
+            else
+                m_it->second.erase(cell_idx);
+        }
     }
 };
 
