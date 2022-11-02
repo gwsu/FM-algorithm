@@ -2,7 +2,7 @@
 #define TYPE_H_
 
 using fp = double;
-using intg = int;
+using intg = long long;
 
 
 #endif  // TYPE_H_
