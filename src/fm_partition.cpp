@@ -13,7 +13,7 @@
 #include "group.h"
 
 const intg INVALID = std::numeric_limits<intg>::min();
-const double time_limit = 295;
+const double time_limit = 293;
 
 namespace std {
 
@@ -172,10 +172,10 @@ void FM::fm_partition() {
         // solution.
         // for pass 2, only i < (num_cell/2)/10 will optimize the solution.
         // for pass 3, 4, 5... are more less times to optimize the solution.
-        intg half_cell = (num_cell / 2) / ((epoch == 0) ? 1 : 10);
+        intg half_cell = (num_cell / 2) / ((epoch == 0) ? 1 : 1);
         // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
         // the best_cost anymore.
-        for (int i = 0; i < num_cell; ++i) {
+        for (int i = 0; i < half_cell; ++i) {
             cost_improvement = now.update(global_start, -1, record);
 
             // NOTE: based on my experiment, when i > 75% of cell, it couldn't
@@ -225,10 +225,7 @@ void FM::fm_partition() {
                 break;
         }
 
-        if ((static_cast<fp>(prev_cost - best_cost) /
-             static_cast<fp>(prev_cost)) < 0.01) {
-            break;
-        } else if (duration > time_limit) {
+        if (duration > time_limit) {
             cout << "Time out break" << endl;
             break;
         }
