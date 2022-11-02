@@ -54,11 +54,12 @@ void FM::initial_partition() {
     for (int i = 0; i < num_cell; ++i) {
         auto c_id = sorted_cell[i];
         auto &c = cell_array[sorted_cell[i]];
-        if (g0_sz > g1_sz) {
-            group_num = 1;
-        } else {
-            group_num = 0;
-        }
+        // if (g0_sz > g1_sz) {
+        //     group_num = 1;
+        // } else {
+        //     group_num = 0;
+        // }
+        group_num = 0;
 
         cell_group[c_id] = group_num;
         group_array[group_num].add_cell(c_id);
@@ -93,20 +94,37 @@ void FM::refinement(intg g0_sz, intg g1_sz) {
     intg from_group = -1;
     intg to_group = -1;
     intg inner_counter = 0;
+    // size, cell_idx
+    set<pair<intg, intg>, greater<>> s0;
+    set<pair<intg, intg>, greater<>> s1;
+    s0.clear();
+    s1.clear();
+    for (int i = 0; i < num_cell; ++i) {
+        if (cell_group[i] == 0) {
+            s0.insert(make_pair(cell_array[i].sz0, i));
+        } else {
+            s1.insert(make_pair(cell_array[i].sz0, i));
+        }
+    }
 
     while (!group_valid(g0_sz, g1_sz)) {
         inner_counter = 0;
         while (!group_valid(g0_sz, g1_sz)) {
+            intg change_cell = -1;
             if (g0_sz > g1_sz) {
                 from_group = 0;
                 to_group = 1;
+                auto cand = s0.begin();
+                change_cell = cand->second;
+                s0.erase(cand);
             } else {
                 from_group = 1;
                 to_group = 0;
+                auto cand = s1.begin();
+                change_cell = cand->second;
+                s1.erase(cand);
             }
 
-            auto change_cell = greedy_swap_candidate(
-                *this, group_array[from_group], moved, _gain);
             moved[change_cell] = true;
             group_array[from_group].remove_cell(change_cell);
             group_array[to_group].add_cell(change_cell);
@@ -218,7 +236,7 @@ void FM::fm_partition() {
         tmp_cost = prev_cost;
         best_fm_data.reset_lock();
         best_fm_data.reconstruct_bucket();
-        for (int i = 0; i < num_cell; ++i) {
+        for (int i = 0; i < half_cell; ++i) {
             cost_improvement = best_fm_data.update(global_end, i, record);
             tmp_cost -= cost_improvement;
             if (tmp_cost <= best_cost)
