@@ -38,7 +38,7 @@ void FM::init(string cell_file, string net_file) {
     }
     cell_fs.close();
     cell_s_net = vector<vector<intg>>(cell_array.size());
-    cell_s_effect = vector<set<intg>>(cell_array.size());
+    cell_s_effect = vector<unordered_set<intg>>(cell_array.size());
 
     // net
     fstream net_fs;
