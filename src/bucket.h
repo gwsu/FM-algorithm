@@ -46,35 +46,59 @@ public:
     // set<BucketElement> st;
 
     // map<intg, unordered_set<BucketElement>, greater<>> m;
-    map<intg, set<intg>, greater<>> m;
+    map<intg, set<intg>, greater<>> m0;
+    map<intg, set<intg>, greater<>> m1;
 
 public:
     Bucket() {}
     Bucket(Bucket &rhs) {
-        // st0 = set<BucketElement>(rhs.st0.begin(), rhs.st0.end());
-        // st1 = set<BucketElement>(rhs.st1.begin(), rhs.st1.end());
-        // st = set<BucketElement>(rhs.st.begin(), rhs.st.end());
-        m = map<intg, set<intg>, greater<>>(rhs.m.begin(), rhs.m.end());
+        m0 = map<intg, set<intg>, greater<>>(rhs.m0.begin(), rhs.m0.end());
+        m1 = map<intg, set<intg>, greater<>>(rhs.m1.begin(), rhs.m1.end());
     }
     void add_element(intg cell_group, intg cell_idx, intg gain_value) {
-        auto m_it = m.find(gain_value);
-        if (m_it == m.end()) {
-            set<intg> us;
-            us.insert(cell_idx);
-            m[gain_value] = us;
+        if (cell_group == 0) {
+            auto m_it = m0.find(gain_value);
+            if (m_it == m0.end()) {
+                set<intg> us;
+                us.insert(cell_idx);
+                m0[gain_value] = us;
+            } else {
+                m0[gain_value].insert(cell_idx);
+            }
         } else {
-            m[gain_value].insert(cell_idx);
+            auto m_it = m1.find(gain_value);
+            if (m_it == m1.end()) {
+                set<intg> us;
+                us.insert(cell_idx);
+                m1[gain_value] = us;
+            } else {
+                m1[gain_value].insert(cell_idx);
+            }
         }
     }
     void remove_element(intg cell_group, intg cell_idx, intg gain_value) {
-        auto m_it = m.find(gain_value);
-        if (m_it != m.end()) {
-            if (m_it->second.size() == 0)
-                return;
-            else if (m_it->second.size() == 1 && m_it->second.count(cell_idx))
-                m.erase(m_it);
-            else
-                m_it->second.erase(cell_idx);
+        if (cell_group == 0) {
+            auto m_it = m0.find(gain_value);
+            if (m_it != m0.end()) {
+                if (m_it->second.size() == 0)
+                    return;
+                else if (m_it->second.size() == 1 &&
+                         m_it->second.count(cell_idx))
+                    m0.erase(m_it);
+                else
+                    m_it->second.erase(cell_idx);
+            }
+        } else {
+            auto m_it = m1.find(gain_value);
+            if (m_it != m1.end()) {
+                if (m_it->second.size() == 0)
+                    return;
+                else if (m_it->second.size() == 1 &&
+                         m_it->second.count(cell_idx))
+                    m1.erase(m_it);
+                else
+                    m_it->second.erase(cell_idx);
+            }
         }
     }
 };
