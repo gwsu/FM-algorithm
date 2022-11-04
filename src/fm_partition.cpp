@@ -318,7 +318,8 @@ intg FMMetaData::update(
     cell_group[c_id] = to_group;
 
     // update hyper_part
-    b.remove_element(from_group, c_id, gain[c_id]);
+    b.remove_element(from_group, c_id, gain[c_id],
+                     fm.cell_array[c_id].get_size(to_group));
     for (auto &n : fm.cell_s_net[c_id]) {
         if (from_group == 0)
             hyperedge_part[n]--;
@@ -329,9 +330,13 @@ intg FMMetaData::update(
     // update gain
     for (auto &effect_c : fm.cell_s_effect[c_id]) {
         if (!done[effect_c]) {
-            b.remove_element(cell_group[effect_c], effect_c, gain[effect_c]);
+            b.remove_element(
+                cell_group[effect_c], effect_c, gain[effect_c],
+                fm.cell_array[effect_c].get_size(!cell_group[effect_c]));
             calculate_gain(effect_c);
-            b.add_element(cell_group[effect_c], effect_c, gain[effect_c]);
+            b.add_element(
+                cell_group[effect_c], effect_c, gain[effect_c],
+                fm.cell_array[effect_c].get_size(!cell_group[effect_c]));
         }
     }
 

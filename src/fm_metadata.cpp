@@ -28,7 +28,8 @@ void FMMetaData::init(FM *_fm) {
     // calculate gain
     for (int i = 0; i < fm.num_cell; ++i) {
         calculate_gain(i);
-        b.add_element(cell_group[i], i, gain[i]);
+        b.add_element(cell_group[i], i, gain[i],
+                      fm.cell_array[i].get_size(!cell_group[i]));
     }
 }
 
@@ -81,20 +82,20 @@ BucketElement FMMetaData::get_candidate(bool overall) {
     if (m0 == b.m0.end() && m1 == b.m1.end())
         return {};
     else if (m0 == b.m0.end()) {
-        auto c1 = *(m1->second.begin());
+        auto c1 = (*(m1->second.begin())).second;
         if (is_legal_group_size(c1))
             return BucketElement{c1, gain[c1]};
         else
             return {};
     } else if (m1 == b.m1.end()) {
-        auto c0 = *(m0->second.begin());
+        auto c0 = (*(m0->second.begin())).second;
         if (is_legal_group_size(c0))
             return BucketElement{c0, gain[c0]};
         else
             return {};
     } else {
-        auto c1_value = *(m1->second.begin());
-        auto c0_value = *(m0->second.begin());
+        auto c1_value = (*(m1->second.begin())).second;
+        auto c0_value = (*(m0->second.begin())).second;
         if (gain[c0_value] > gain[c1_value]) {
             if (is_legal_group_size(c0_value))
                 return BucketElement{c0_value, gain[c0_value]};
@@ -141,7 +142,8 @@ void FMMetaData::reconstruct_bucket() {
     b.m1.clear();
     for (int i = 0; i < fmptr->num_cell; ++i) {
         calculate_gain(i);
-        b.add_element(cell_group[i], i, gain[i]);
+        b.add_element(cell_group[i], i, gain[i],
+                      fmptr->cell_array[i].get_size(!cell_group[i]));
     }
 }
 

@@ -41,52 +41,55 @@ public:
 
 class Bucket {
 public:
-    // set<BucketElement> st0;
-    // set<BucketElement> st1;
-    // set<BucketElement> st;
-
-    // map<intg, unordered_set<BucketElement>, greater<>> m;
-    map<intg, set<intg>, greater<>> m0;
-    map<intg, set<intg>, greater<>> m1;
+    // pair<intg, intg> --> cell size, cell idx
+    // cell size from small to large
+    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<>> m0;
+    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<>> m1;
 
 public:
     Bucket() {}
     Bucket(Bucket &rhs) {
-        m0 = map<intg, set<intg>, greater<>>(rhs.m0.begin(), rhs.m0.end());
-        m1 = map<intg, set<intg>, greater<>>(rhs.m1.begin(), rhs.m1.end());
+        m0 = rhs.m0;
+        m1 = rhs.m1;
     }
-    void add_element(intg cell_group, intg cell_idx, intg gain_value) {
+    void add_element(intg cell_group,
+                     intg cell_idx,
+                     intg gain_value,
+                     intg cell_prop) {
         if (cell_group == 0) {
             auto m_it = m0.find(gain_value);
             if (m_it == m0.end()) {
-                set<intg> us;
-                us.insert(cell_idx);
+                set<pair<intg, intg>, greater<pair<intg, intg>>> us;
+                us.insert(make_pair(cell_prop, cell_idx));
                 m0[gain_value] = us;
             } else {
-                m0[gain_value].insert(cell_idx);
+                m0[gain_value].insert(make_pair(cell_prop, cell_idx));
             }
         } else {
             auto m_it = m1.find(gain_value);
             if (m_it == m1.end()) {
-                set<intg> us;
-                us.insert(cell_idx);
+                set<pair<intg, intg>, greater<pair<intg, intg>>> us;
+                us.insert(make_pair(cell_prop, cell_idx));
                 m1[gain_value] = us;
             } else {
-                m1[gain_value].insert(cell_idx);
+                m1[gain_value].insert(make_pair(cell_prop, cell_idx));
             }
         }
     }
-    void remove_element(intg cell_group, intg cell_idx, intg gain_value) {
+    void remove_element(intg cell_group,
+                        intg cell_idx,
+                        intg gain_value,
+                        int cell_prop) {
         if (cell_group == 0) {
             auto m_it = m0.find(gain_value);
             if (m_it != m0.end()) {
                 if (m_it->second.size() == 0)
                     return;
                 else if (m_it->second.size() == 1 &&
-                         m_it->second.count(cell_idx))
+                         m_it->second.count(make_pair(cell_prop, cell_idx)))
                     m0.erase(m_it);
                 else
-                    m_it->second.erase(cell_idx);
+                    m_it->second.erase(make_pair(cell_prop, cell_idx));
             }
         } else {
             auto m_it = m1.find(gain_value);
@@ -94,10 +97,10 @@ public:
                 if (m_it->second.size() == 0)
                     return;
                 else if (m_it->second.size() == 1 &&
-                         m_it->second.count(cell_idx))
+                         m_it->second.count(make_pair(cell_prop, cell_idx)))
                     m1.erase(m_it);
                 else
-                    m_it->second.erase(cell_idx);
+                    m_it->second.erase(make_pair(cell_prop, cell_idx));
             }
         }
     }
