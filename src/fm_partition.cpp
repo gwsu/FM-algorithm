@@ -190,7 +190,7 @@ void FM::fm_partition() {
         // solution.
         // for pass 2, only i < (num_cell/2)/10 will optimize the solution.
         // for pass 3, 4, 5... are more less times to optimize the solution.
-        intg half_cell = (num_cell / 2) / ((epoch == 0) ? 1 : 1);
+        intg half_cell = (num_cell / 2) / ((epoch == 0) ? 1 : 10);
         // NOTE: based on my experiment, when i > 505 of cell, it won't optimize
         // the best_cost anymore.
         for (int i = 0; i < half_cell; ++i) {
