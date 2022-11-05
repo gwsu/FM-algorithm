@@ -11,7 +11,6 @@ void FM::output(string output_file) {
     fstream out;
     out.open(output_file.c_str(), fstream::out);
 
-    // FIXME: calculate true cut.
     out << "cut_size " << cut_size() << endl;
 
     for (auto &g : group_array) {

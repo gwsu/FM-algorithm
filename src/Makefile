@@ -3,8 +3,7 @@ CXXFLAGS = -std=c++17 -O3 -march=native
 # CXXFLAGS = -std=c++17 -pg -g  -Wall -Wextra -pedantic -DDEBUG
 # CXXFLAGS = -std=c++17 -g  -Wall -Wextra -pedantic -DDEBUG
 
-LIBS = cell.o \
-	   fm_parse.o \
+LIBS = fm_parse.o \
 	   fm_partition.o \
 	   fm_output.o \
 	   fm_cut.o \

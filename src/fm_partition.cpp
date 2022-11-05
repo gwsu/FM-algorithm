@@ -32,33 +32,12 @@ void FM::partition() {
 }
 
 void FM::initial_partition() {
-    vector<intg> sorted_cell(num_cell);
-    for (int i = 0; i < num_cell; ++i)
-        sorted_cell[i] = i;
-
-    sort(
-        sorted_cell.begin(), sorted_cell.end(),
-        // [&](Cell lhs, Cell rhs) { return lhs.avg_size() < rhs.avg_size(); });
-        [&](intg lhs, intg rhs) {
-            return cell_array[lhs].max_size() < cell_array[rhs].max_size();
-        });
-    // [&](Cell lhs, Cell rhs) { return lhs.min_size() > rhs.min_size(); });
-
-    // TODO: For multi-thread version, We can use shuffle to generate different
-    // initial solution :
-    // shuffle(shuffle_p.begin(), shuffle_p.end(), g);
-
     // greedy
     intg g0_sz = 0, g1_sz = 0;
     intg group_num = -1;
-    for (int i = 0; i < num_cell; ++i) {
-        auto c_id = sorted_cell[i];
-        auto &c = cell_array[sorted_cell[i]];
-        // if (g0_sz > g1_sz) {
-        //     group_num = 1;
-        // } else {
-        //     group_num = 0;
-        // }
+    for (intg i = 0; i < num_cell; ++i) {
+        auto c_id = i;
+        auto &c = cell_array[i];
         group_num = 0;
 
         cell_group[c_id] = group_num;
@@ -165,7 +144,6 @@ void FM::fm_partition() {
     intg cost_improvement = INVALID;
     // Does this pass improve the cut size?
     bool had_improved = false;
-    intg counter = 0;
 #ifdef DEBUG
     std::chrono::time_point<std::chrono::high_resolution_clock> t_start, t_end;
 #endif
@@ -205,7 +183,6 @@ void FM::fm_partition() {
             tmp_cost -= cost_improvement;
             if (best_cost > tmp_cost) {
                 best_cost = tmp_cost;
-                // best_fm_data.copy(now);
                 had_improved = true;
             }
         }
@@ -286,7 +263,7 @@ intg FMMetaData::update(
     // find best gain candidate
     BucketElement cell_id_gain_value;
     if (mode == -1) {
-        cell_id_gain_value = get_candidate(true);
+        cell_id_gain_value = get_candidate();
         record.emplace_back(cell_id_gain_value.cell_idx);
     } else {
         cell_id_gain_value = BucketElement{record[mode], gain[record[mode]]};

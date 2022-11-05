@@ -75,7 +75,7 @@ intg FMMetaData::get_cut_size() {
     return num_cut;
 }
 
-BucketElement FMMetaData::get_candidate(bool overall) {
+BucketElement FMMetaData::get_candidate() {
     auto m0 = b.m0.begin();
     auto m1 = b.m1.begin();
 
@@ -127,11 +127,10 @@ bool FMMetaData::is_legal_group_size(intg c_id) {
         new_g1_sz -= c.sz1;
         new_g0_sz += c.sz0;
     }
-    return group_valid(new_g0_sz, new_g1_sz /* , true */);
+    return group_valid(new_g0_sz, new_g1_sz);
 }
 
 void FMMetaData::reset_lock() {
-    // done = vector<bool>(fmptr->num_cell, false);
     auto size = done.size();
     done.resize(0);
     done.resize(size, false);

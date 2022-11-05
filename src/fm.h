@@ -73,7 +73,7 @@ public:
 
     FM *fmptr;
 
-    BucketElement get_candidate(bool overall);
+    BucketElement get_candidate();
     bool is_legal_group_size(intg c_id);
 
 public:

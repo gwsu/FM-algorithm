@@ -26,17 +26,6 @@ public:
     }
     BucketElement(intg _c, intg _g = 0) : cell_idx(_c), gain_value(_g) {}
     bool empty() { return cell_idx == -1; }
-    bool operator<(const BucketElement &rhs) const {
-        // NOTE: we want the descending order
-        if (cell_idx == rhs.cell_idx) {
-            return false;
-        } else {
-            if (gain_value == rhs.gain_value)
-                return cell_idx < rhs.cell_idx;
-            else
-                return gain_value > rhs.gain_value;
-        }
-    }
 };
 
 class Bucket {
