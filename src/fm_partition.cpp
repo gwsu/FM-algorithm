@@ -72,7 +72,6 @@ void FM::refinement(intg g0_sz, intg g1_sz) {
     vector<bool> moved(num_cell, false);
     intg from_group = -1;
     intg to_group = -1;
-    intg inner_counter = 0;
     // size, cell_idx
     set<pair<intg, intg>, greater<>> s0;
     set<pair<intg, intg>, greater<>> s1;
@@ -87,42 +86,36 @@ void FM::refinement(intg g0_sz, intg g1_sz) {
     }
 
     while (!group_valid(g0_sz, g1_sz)) {
-        inner_counter = 0;
-        while (!group_valid(g0_sz, g1_sz)) {
-            intg change_cell = -1;
-            if (g0_sz > g1_sz) {
-                from_group = 0;
-                to_group = 1;
-                auto cand = s0.begin();
-                change_cell = cand->second;
-                s0.erase(cand);
-            } else {
-                from_group = 1;
-                to_group = 0;
-                auto cand = s1.begin();
-                change_cell = cand->second;
-                s1.erase(cand);
-            }
-
-            moved[change_cell] = true;
-            group_array[from_group].remove_cell(change_cell);
-            group_array[to_group].add_cell(change_cell);
-            cell_group[change_cell] = to_group;
-
-            if (g0_sz > g1_sz) {
-                g0_sz -= cell_array[change_cell].get_size(from_group);
-                g1_sz += cell_array[change_cell].get_size(to_group);
-            } else {
-                g1_sz -= cell_array[change_cell].get_size(from_group);
-                g0_sz += cell_array[change_cell].get_size(to_group);
-            }
-            inner_counter++;
-            if (inner_counter == num_cell)
-                break;
-
-            // TODO: add some rollback to smallest cutsize.
+        intg change_cell = -1;
+        if (g0_sz > g1_sz) {
+            from_group = 0;
+            to_group = 1;
+            auto cand = s0.begin();
+            change_cell = cand->second;
+            s0.erase(cand);
+        } else {
+            from_group = 1;
+            to_group = 0;
+            auto cand = s1.begin();
+            change_cell = cand->second;
+            s1.erase(cand);
         }
-        counter += inner_counter;
+
+        moved[change_cell] = true;
+        group_array[from_group].remove_cell(change_cell);
+        group_array[to_group].add_cell(change_cell);
+        cell_group[change_cell] = to_group;
+
+        if (g0_sz > g1_sz) {
+            g0_sz -= cell_array[change_cell].get_size(from_group);
+            g1_sz += cell_array[change_cell].get_size(to_group);
+        } else {
+            g1_sz -= cell_array[change_cell].get_size(from_group);
+            g0_sz += cell_array[change_cell].get_size(to_group);
+        }
+        counter++;
+        if (counter == num_cell)
+            break;
     }
 #ifdef DEBUG
     cout << "Refine : " << counter << " Times." << endl;
