@@ -10,6 +10,8 @@ namespace std {
 
 void FM::init(string cell_file, string net_file) {
     global_start = std::chrono::high_resolution_clock::now();
+
+    auto parse_start = std::chrono::high_resolution_clock::now();
     // cell
     fstream cell_fs;
     cell_fs.open(cell_file.c_str(), fstream::in);
@@ -80,10 +82,17 @@ void FM::init(string cell_file, string net_file) {
         counter++;
     }
     net_fs.close();
+
+    auto parse_end = std::chrono::high_resolution_clock::now();
 #ifdef DEBUG
     cout << "Cell: " << cell_array.size() << endl;
     cout << "Net : " << net_array.size() << endl;
 #endif
+    cout << "Parse time: "
+         << std::chrono::duration<double, std::ratio<1, 1>>(parse_end -
+                                                            parse_start)
+                .count()
+         << endl;
 
     initial_internal_parameter();
 }

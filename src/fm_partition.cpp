@@ -57,9 +57,9 @@ void FM::initial_partition() {
     cout << "===================================================" << endl;
     cout << "group 0 size : " << get_group_size(*this, group_array[0]) << endl;
     cout << "group 1 size : " << get_group_size(*this, group_array[1]) << endl;
-    cout << "Cut : " << cut_size() << endl;
     cout << "Valid : " << group_valid(g0_sz, g1_sz) << endl;
 #endif
+    cout << "Cut : " << cut_size() << endl;
 }
 
 

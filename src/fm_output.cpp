@@ -8,6 +8,7 @@
 namespace std {
 
 void FM::output(string output_file) {
+    auto io_start = std::chrono::high_resolution_clock::now();
     fstream out;
     out.open(output_file.c_str(), fstream::out);
 
@@ -24,6 +25,12 @@ void FM::output(string output_file) {
             out << cell_array[c].cell_name << endl;
         }
     }
+    auto io_end = std::chrono::high_resolution_clock::now();
+    cout << "============= IO time ===============" << endl;
+    cout << "IO time: "
+         << std::chrono::duration<double, std::ratio<1, 1>>(io_end - io_start)
+                .count()
+         << " s" << endl;
 }
 
 
