@@ -13,7 +13,7 @@
 #include "group.h"
 
 const intg INVALID = std::numeric_limits<intg>::min();
-const double time_limit = 293;
+const double time_limit = 200;
 
 namespace std {
 
