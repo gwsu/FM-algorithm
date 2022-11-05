@@ -32,8 +32,10 @@ class Bucket {
 public:
     // pair<intg, intg> --> cell size, cell idx
     // cell size from small to large
-    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<>> m0;
-    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<>> m1;
+    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<intg>>
+        m0;
+    map<intg, set<pair<intg, intg>, greater<pair<intg, intg>>>, greater<intg>>
+        m1;
 
 public:
     Bucket() {}

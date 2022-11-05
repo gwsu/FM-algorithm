@@ -20,7 +20,7 @@ public:
 
 public:
     Cell() : index(-1), group_number(-1) {}
-    Cell(int _index, int _sz1, int _sz2, string _name, int _group_number)
+    Cell(intg _index, intg _sz1, intg _sz2, string _name, intg _group_number)
         : index(_index),
           sz(vector<intg>{_sz1, _sz2}),
           group_number(_group_number),

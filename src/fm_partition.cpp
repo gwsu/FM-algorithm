@@ -73,8 +73,8 @@ void FM::refinement(intg g0_sz, intg g1_sz) {
     intg from_group = -1;
     intg to_group = -1;
     // size, cell_idx
-    set<pair<intg, intg>, greater<>> s0;
-    set<pair<intg, intg>, greater<>> s1;
+    set<pair<intg, intg>, greater<pair<intg, intg>>> s0;
+    set<pair<intg, intg>, greater<pair<intg, intg>>> s1;
     s0.clear();
     s1.clear();
     for (int i = 0; i < num_cell; ++i) {
