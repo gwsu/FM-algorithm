@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 
-#include "fm.h"
+#include "lib/fm.h"
 
 using namespace std;
 

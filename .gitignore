@@ -9,3 +9,4 @@ src/*.o
 src/*_report
 src/*.out
 src/report
+build/
