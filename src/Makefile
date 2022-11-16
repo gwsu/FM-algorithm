@@ -28,10 +28,8 @@ test:
 	time ./$(EXE) $(TESTCASE_DIR)/p2-$(CASE).cells $(TESTCASE_DIR)/p2-$(CASE).nets $(OUTPUT_DIR)/p2-$(CASE).out
 	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-$(CASE).cells $(TESTCASE_DIR)/p2-$(CASE).nets $(OUTPUT_DIR)/p2-$(CASE).out
 
-testall:
+testall: clean all
 	-rm $(OUTPUT_DIR)/*.out
-	time ./$(EXE) $(TESTCASE_DIR)/p2-0.cells $(TESTCASE_DIR)/p2-0.nets $(OUTPUT_DIR)/p2-0.out
-	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-0.cells $(TESTCASE_DIR)/p2-0.nets $(OUTPUT_DIR)/p2-0.out
 	time ./$(EXE) $(TESTCASE_DIR)/p2-1.cells $(TESTCASE_DIR)/p2-1.nets $(OUTPUT_DIR)/p2-1.out
 	./$(VERIFY_DIR)/verify $(TESTCASE_DIR)/p2-1.cells $(TESTCASE_DIR)/p2-1.nets $(OUTPUT_DIR)/p2-1.out
 	time ./$(EXE) $(TESTCASE_DIR)/p2-2.cells $(TESTCASE_DIR)/p2-2.nets $(OUTPUT_DIR)/p2-2.out
@@ -46,28 +44,39 @@ testall:
 clean:
 	-rm $(EXE)
 	-rm $(LIBS)
-	-rm $(OUTPUT_DIR)/*.out
 
 benchmark: packing_gz
-	rm -rf ../HW2_grading/student/111062506/CS6135_HW2_111062506.tar.gz
-	mv CS6135_HW2_111062506.tar.gz ../HW2_grading/student/111062506/
+	-rm -rf ../HW2_grading
+	tar -zxvf ../HW2_grading.tar.gz -C ../
+	mkdir -p ../HW2_grading/student/111062506
+	cp CS6135_HW2_111062506.tar.gz ../HW2_grading/student/111062506/
 	cd ../HW2_grading && bash HW2_grading.sh
 
 upload: packing_gz
 	ssh g111062506@ic 'rm -rf ~/hw2/HW2_grading'
-	scp -r ../HW2_grading g111062506@ic:~/hw2
+	scp ../HW2_grading.tar.gz g111062506@ic:~/hw2/
+	ssh g111062506@ic 'cd hw2/ && tar -zxvf HW2_grading.tar.gz && mkdir HW2_grading/student/111062506'
 	scp CS6135_HW2_111062506.tar.gz g111062506@ic:~/hw2/HW2_grading/student/111062506/
 
-packing_gz:
+submit: testall packing_gz benchmark
+	echo "finish"
+
+packing_gz: testall
 	-rm -rf HW2 CS6135_HW2_111062506.tar.gz
 	mkdir -p HW2/src
 	cp *.cpp HW2/src/
-	cp Makefile HW2/src/
 	cp *.h HW2/src/
+	cp Makefile HW2/src/
+	cp README HW2/src/
 	cp -r ../output/ HW2/
 	mkdir -p HW2/bin
 	cp ../bin/hw2 HW2/bin/hw2
+	cp ../vlsi-hw2.pdf HW2/CS6135_HW2_111062506_report.pdf
+	echo "below is unneccesary"
+	cp -r ../testcases HW2/
+	cp -r ../verifier HW2/
 	tar -zcvf CS6135_HW2_111062506.tar.gz HW2/
+	cp CS6135_HW2_111062506.tar.gz ../
 	-rm -rf HW2
 
 # send_cases:
