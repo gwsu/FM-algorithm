@@ -15,3 +15,9 @@ $ ./bin/bw_partitioner <cells file>.cells <nets file>.nets <output file>.out
 
 ## Library
 I also provide the library version with CMake
+
+
+
+
+
+Check my paper [here](https://drive.google.com/file/d/1nkxWtQFfg3D53fwv4HeNFa_ntyIE8MH5/view?usp=share_link)
